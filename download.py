@@ -60,8 +60,7 @@ data = {
 }
 
 '''
-
-Module-Ids: 
+Module-Ids:
 
 1001224: Realisierte Erzeugung > Kernenergie
 1004066: Realisierte Erzeugung > Biomasse
@@ -77,7 +76,6 @@ Module-Ids:
 1001225: Realisierte Erzeugung > Wind Offshore
 5000410: Realisierter Stromverbrauch > Gesamt
 5004359: Realisierter Stromverbrauch > Residuallast
-
 '''
 
 ts_now = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000) - 24*3600000
