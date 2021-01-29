@@ -44,6 +44,29 @@ data = {
     }]
 }
 
+'''
+
+Module-Ids: 
+
+1001224: Realisierte Erzeugung > Kernenergie
+1004066: Realisierte Erzeugung > Biomasse
+1004067: Realisierte Erzeugung > Wind Onshore
+1004068: Realisierte Erzeugung > Photovoltaik
+1001223: Realisierte Erzeugung > Braunkohle
+1004069: Realisierte Erzeugung > Steinkohle
+1004071: Realisierte Erzeugung > Erdgas
+1004070: Realisierte Erzeugung > Pumpspeicher
+1001226: Realisierte Erzeugung > Wasserkraft
+1001228: Realisierte Erzeugung > Sonstige Erneuerbare
+1001227: Realisierte Erzeugung > Sonstige Konventionelle
+1001225: Realisierte Erzeugung > Wind Offshore
+5000410: Realisierter Stromverbrauch > Gesamt
+5004359: Realisierter Stromverbrauch > Residuallast
+
+'''
+
+data['request_form'][0]['moduleIds'] = ['1001224']
+
 response = requests.post(ENDPOINT_URL, headers=headers,
                          cookies={}, data=json.dumps(data))
 
