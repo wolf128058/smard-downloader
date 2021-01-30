@@ -102,3 +102,49 @@ for category in root.findall('kategorie'):
             SUM_VALUES += locale.atof(myval.text)
         print(cat_name + ' > ' + module_name + ': ' + str(SUM_VALUES) + ' ' + unit_name)
 CACHE_FILE = ''
+def load():
+    global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
+    TS_NOW = round(round_time(datetime.datetime.now(), 24*60*60).timestamp())
+    if datetime.datetime.now().hour > 12:
+        TS_NOW -= 3600*24
+    FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - 3600*24) * 1000
+    FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW - 1) * 1000
+    # print(FORM_DATA)
+
+    if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 24 * 3600 or datetime.datetime.now().hour <= 1):
+        filecontent = open(CACHE_FILE, 'r').read()
+        root = ET.fromstring(filecontent)
+    else:
+        response = requests.post(
+            ENDPOINT_URL, headers=HEADERS, cookies={}, data=json.dumps(FORM_DATA))
+        with open(CACHE_FILE, 'wb') as output_file:
+            output_file.write(response.content)
+            print('-- Download Completed ---')
+        root = ET.fromstring(response.content)
+
+    RESPONSE_DATA = []
+    locale.setlocale(locale.LC_NUMERIC, "de_DE.UTF-8")
+    mod_index = 0
+    for category in root.findall('kategorie'):
+        cat_name = category.find('kategorie_name').text
+        modules = category.find('bausteine')
+        for module in modules.findall('baustein'):
+            mod_id = FORM_DATA['request_form'][0]['moduleIds'][mod_index]
+            mod_index += 1
+            module_dict = {'id': str(
+                mod_id), 'category_name': '', 'module_name': '', 'value': 0, 'unit': ''}
+            module_dict['category_name'] = cat_name
+            module_name = module.find('baustein_name').text
+            module_dict['module_name'] = module_name
+            unit_name = module.find('einheit').text
+            module_dict['unit'] = unit_name
+            values = module.find('werte')
+            sum_values = 0
+            for single_value in values.findall('wert_detail'):
+                myval = single_value.find('wert')
+                sum_values += locale.atof(myval.text)
+            module_dict['value'] = sum_values
+
+            RESPONSE_DATA.append(module_dict)
+
+    # print(json.dumps(RESPONSE_DATA, indent=4))
