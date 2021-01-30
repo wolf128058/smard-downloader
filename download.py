@@ -15,7 +15,7 @@ import requests
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
-headers = {
+HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0',
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'de,en-US;q=0.7,en;q=0.3',
@@ -27,7 +27,7 @@ headers = {
     'Sec-GPC': '1',
 }
 
-data = {
+FORM_DATA = {
     "request_form": [{
         "format": "XML",
         "moduleIds": [
@@ -106,7 +106,13 @@ class CustomCollector:
             energy_data.add_metric(
                 [str(data['id']), data['category_name'], data['module_name']], data['value'])
         yield energy_data
+
+
+ENDPOINT_URL = ''
 CACHE_FILE = ''
+RESPONSE_DATA = []
+
+TS_NOW = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000)
 PARSER = argparse.ArgumentParser(
     description='Convert data received from smard.de and provide them as prometheus-service')
 PARSER.add_argument(
@@ -130,6 +136,7 @@ if ARGS.modules != 'all':
             if isinstance(module, int):
                 list_modules.append(module)
         FORM_DATA['request_form'][0]['moduleIds'] = list_modules
+
 
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
