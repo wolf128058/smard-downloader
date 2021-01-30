@@ -88,19 +88,24 @@ def round_time(dt=None, round_to=60):
     rounding = (seconds+round_to/2) // round_to * round_to
     return dt + datetime.timedelta(0, rounding-seconds, -dt.microsecond)
 
-locale.setlocale(locale.LC_NUMERIC, "de_DE.UTF-8")
-for category in root.findall('kategorie'):
-    cat_name = category.find('kategorie_name').text
-    modules = category.find('bausteine')
-    for module in modules.findall('baustein'):
-        module_name = module.find('baustein_name').text
-        unit_name = module.find('einheit').text
-        values = module.find('werte')
-        SUM_VALUES = 0
-        for single_value in values.findall('wert_detail'):
-            myval = single_value.find('wert')
-            SUM_VALUES += locale.atof(myval.text)
-        print(cat_name + ' > ' + module_name + ': ' + str(SUM_VALUES) + ' ' + unit_name)
+
+class CustomCollector:
+    """
+    Data Collector for serving them in prometheus client
+    """
+
+    def collect(self):
+        """
+        collectors only function called collect. and it collects data
+        """
+        global RESPONSE_DATA
+
+        energy_data = GaugeMetricFamily('smard_energydata', 'consumption or production in MWh', labels=[
+            'id', 'cat_name', 'module_name', 'module_value'])
+        for data in RESPONSE_DATA:
+            energy_data.add_metric(
+                [str(data['id']), data['category_name'], data['module_name']], data['value'])
+        yield energy_data
 CACHE_FILE = ''
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
