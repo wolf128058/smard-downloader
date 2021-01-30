@@ -10,7 +10,6 @@ import os.path
 import re
 import argparse
 import time
-CACHE_FILE = 'downloads/download.xml'
 
 import requests
 from prometheus_client import start_http_server
@@ -102,3 +101,4 @@ for category in root.findall('kategorie'):
             myval = single_value.find('wert')
             SUM_VALUES += locale.atof(myval.text)
         print(cat_name + ' > ' + module_name + ': ' + str(SUM_VALUES) + ' ' + unit_name)
+CACHE_FILE = ''
