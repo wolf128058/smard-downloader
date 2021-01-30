@@ -153,3 +153,34 @@ def load():
             RESPONSE_DATA.append(module_dict)
 
     # print(json.dumps(RESPONSE_DATA, indent=4))
+
+
+def main():
+    """
+    main function collecting data from input file/storage and serving prometheus data
+    """
+    global ENDPOINT_URL, CACHE_FILE, FORM_DATA, TS_NOW, ARGS
+
+    ENDPOINT_URL = ARGS.api
+    CACHE_FILE = ARGS.storage
+
+
+if __name__ == '__main__':
+    try:
+        PORT_NUMBER = int(ARGS.port)
+    except ValueError:
+        exit('Error: ' + ARGS.port + ' is not a valid port-number')
+    main()
+    load()
+    REGISTRY.register(CustomCollector())
+    # Start up the server to expose the metrics.
+    start_http_server(int(ARGS.port))
+    # Generate some requests.
+    while True:
+        time.sleep(60*15)
+        TS_NOW = round(round_time(
+            datetime.datetime.now(), 24*60*60).timestamp())
+        if datetime.datetime.now().hour > 12:
+            TS_NOW -= 3600*24
+            main()
+            load()
