@@ -80,7 +80,7 @@ Module-Ids:
 5004359: Realisierter Stromverbrauch > Residuallast
 '''
 
-ts_now = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000) - 24*3600000
+ts_now = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000)
 
 data['request_form'][0]['timestamp_from'] = ts_now - 24*3600000
 data['request_form'][0]['timestamp_to'] = ts_now - 1
