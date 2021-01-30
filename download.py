@@ -3,10 +3,14 @@
 # pylint: disable=missing-docstring, line-too-long
 
 import json
-import locale 
+import locale
 import datetime
-import requests
 import xml.etree.ElementTree as ET
+import os.path
+import requests
+
+ENDPOINT_URL = 'https://www.smard.de/nip-download-manager/nip/download/market-data'
+CACHE_FILE = 'downloads/download.xml'
 
 def round_time(dt=None, round_to=60):
     """Round a datetime object to any time lapse in seconds
@@ -19,8 +23,6 @@ def round_time(dt=None, round_to=60):
     seconds = (dt.replace(tzinfo=None) - dt.min).seconds
     rounding = (seconds+round_to/2) // round_to * round_to
     return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
-
-ENDPOINT_URL = 'https://www.smard.de/nip-download-manager/nip/download/market-data'
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0',
@@ -85,17 +87,17 @@ ts_now = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000)
 data['request_form'][0]['timestamp_from'] = ts_now - 24*3600000
 data['request_form'][0]['timestamp_to'] = ts_now - 1
 
-response = requests.post(ENDPOINT_URL, headers=headers,
-                         cookies={}, data=json.dumps(data))
+if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 24*3600 or datetime.datetime.now().hour <= 1):
+    filecontent = open(CACHE_FILE, 'r').read()
+    root = ET.fromstring(filecontent)
+else:
+    response = requests.post(ENDPOINT_URL, headers=headers, cookies={}, data=json.dumps(data))
+    with open(CACHE_FILE, 'wb') as output_file:
+        output_file.write(response.content)
+        print('-- Download Completed ---')
+    root = ET.fromstring(response.content)
 
-with open('downloads/download.xml', 'wb') as output_file:
-    output_file.write(response.content)
-
-print('-- Download Completed ---')
-
-root = ET.fromstring(response.content)
 locale.setlocale(locale.LC_NUMERIC, "de_DE.UTF-8")
-
 for category in root.findall('kategorie'):
     cat_name = category.find('kategorie_name').text
     modules = category.find('bausteine')
@@ -103,9 +105,8 @@ for category in root.findall('kategorie'):
         module_name = module.find('baustein_name').text
         unit_name = module.find('einheit').text
         values = module.find('werte')
-        sum_values = 0
+        SUM_VALUES = 0
         for single_value in values.findall('wert_detail'):
             myval = single_value.find('wert')
-            sum_values += locale.atof(myval.text)
-        print(cat_name + ' > ' + module_name + ': ' + str(sum_values) + ' ' + unit_name)
-
+            SUM_VALUES += locale.atof(myval.text)
+        print(cat_name + ' > ' + module_name + ': ' + str(SUM_VALUES) + ' ' + unit_name)
