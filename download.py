@@ -12,17 +12,9 @@ import requests
 ENDPOINT_URL = 'https://www.smard.de/nip-download-manager/nip/download/market-data'
 CACHE_FILE = 'downloads/download.xml'
 
-def round_time(dt=None, round_to=60):
-    """Round a datetime object to any time lapse in seconds
-    dt : datetime.datetime object, default now.
-    round_to : Closest number of seconds to round to, default 1 minute.
-    Author: Thierry Husson 2012 - Use it as you want but don't blame me.
-    """
-    if dt is None:
-        dt = datetime.datetime.now()
-    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
-    rounding = (seconds+round_to/2) // round_to * round_to
-    return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
+import requests
+from prometheus_client import start_http_server
+from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0',
@@ -82,20 +74,20 @@ Module-Ids:
 5004359: Realisierter Stromverbrauch > Residuallast
 '''
 
-ts_now = round(round_time(datetime.datetime.now(), 24*3600).timestamp() * 1000)
 
-data['request_form'][0]['timestamp_from'] = ts_now - 24*3600000
-data['request_form'][0]['timestamp_to'] = ts_now - 1
-
-if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 24*3600 or datetime.datetime.now().hour <= 1):
-    filecontent = open(CACHE_FILE, 'r').read()
-    root = ET.fromstring(filecontent)
-else:
-    response = requests.post(ENDPOINT_URL, headers=headers, cookies={}, data=json.dumps(data))
-    with open(CACHE_FILE, 'wb') as output_file:
-        output_file.write(response.content)
-        print('-- Download Completed ---')
-    root = ET.fromstring(response.content)
+def round_time(dt=None, round_to=60):
+    """Round a datetime object to any time lapse in seconds
+    dt : datetime.datetime object, default now.
+    round_to : Closest number of seconds to round to, default 1 minute.
+    Author: Thierry Husson 2012 - Use it as you want but don't blame me.
+    """
+    if dt is None:
+        dt = datetime.datetime.now()
+    if isinstance(dt, int):
+        dt = datetime.datetime.fromtimestamp(round(dt / 1000))
+    seconds = (dt.replace(tzinfo=None) - dt.min).seconds
+    rounding = (seconds+round_to/2) // round_to * round_to
+    return dt + datetime.timedelta(0, rounding-seconds, -dt.microsecond)
 
 locale.setlocale(locale.LC_NUMERIC, "de_DE.UTF-8")
 for category in root.findall('kategorie'):
