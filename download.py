@@ -107,6 +107,30 @@ class CustomCollector:
                 [str(data['id']), data['category_name'], data['module_name']], data['value'])
         yield energy_data
 CACHE_FILE = ''
+PARSER = argparse.ArgumentParser(
+    description='Convert data received from smard.de and provide them as prometheus-service')
+PARSER.add_argument(
+    '-a', '--api', default='https://www.smard.de/nip-download-manager/nip/download/market-data', help=r'api endpoint of mbroker')
+PARSER.add_argument('-s', '--storage', default='downloads/download.xml',
+                    help=r'store old data between calls e.g. to remember lastseen values')
+PARSER.add_argument('-p', '--port', default=8000,
+                    help=r'the port this service should listen to')
+PARSER.add_argument('-m', '--modules', default='all',
+                    help=r'ids of the modules to collect')
+ARGS = PARSER.parse_args()
+
+if ARGS.modules != 'all':
+    if not ',' in ARGS.modules:
+        single_module = int(ARGS.modules)
+        FORM_DATA['request_form'][0]['moduleIds'] = [single_module]
+    else:
+        list_modules_in = re.split(',', ARGS.modules)
+        list_modules = []
+        for module in list_modules_in:
+            if isinstance(module, int):
+                list_modules.append(module)
+        FORM_DATA['request_form'][0]['moduleIds'] = list_modules
+
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
     TS_NOW = round(round_time(datetime.datetime.now(), 24*60*60).timestamp())
