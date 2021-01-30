@@ -117,7 +117,7 @@ PARSER = argparse.ArgumentParser(
     description='Convert data received from smard.de and provide them as prometheus-service')
 PARSER.add_argument(
     '-a', '--api', default='https://www.smard.de/nip-download-manager/nip/download/market-data', help=r'api endpoint of mbroker')
-PARSER.add_argument('-s', '--storage', default='downloads/download.xml',
+PARSER.add_argument('-s', '--storage', default='downloads/',
                     help=r'store old data between calls e.g. to remember lastseen values')
 PARSER.add_argument('-p', '--port', default=8000,
                     help=r'the port this service should listen to')
@@ -129,13 +129,25 @@ if ARGS.modules != 'all':
     if not ',' in ARGS.modules:
         single_module = int(ARGS.modules)
         FORM_DATA['request_form'][0]['moduleIds'] = [single_module]
+        CACHE_FILE = ARGS.storage + str(single_module) + '.xml'
     else:
         list_modules_in = re.split(',', ARGS.modules)
         list_modules = []
         for module in list_modules_in:
-            if isinstance(module, int):
-                list_modules.append(module)
+            list_modules.append(int(module))
+        list_modules.sort()
+        print(list_modules)
+        name = ''
+        for modules in list_modules:
+            if name != '':
+                name += '-'
+            name += str(modules)
+        CACHE_FILE = ARGS.storage + name + '.xml'
+        print(CACHE_FILE)
+
         FORM_DATA['request_form'][0]['moduleIds'] = list_modules
+else:
+    CACHE_FILE = ARGS.storage + 'all.xml'
 
 
 def load():
@@ -193,7 +205,6 @@ def main():
     global ENDPOINT_URL, CACHE_FILE, FORM_DATA, TS_NOW, ARGS
 
     ENDPOINT_URL = ARGS.api
-    CACHE_FILE = ARGS.storage
 
 
 if __name__ == '__main__':
