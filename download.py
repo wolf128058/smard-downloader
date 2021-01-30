@@ -3,8 +3,10 @@
 # pylint: disable=missing-docstring, line-too-long
 
 import json
+import locale 
 import datetime
 import requests
+import xml.etree.ElementTree as ET
 
 def round_time(dt=None, round_to=60):
     """Round a datetime object to any time lapse in seconds
@@ -89,4 +91,21 @@ response = requests.post(ENDPOINT_URL, headers=headers,
 with open('downloads/download.xml', 'wb') as output_file:
     output_file.write(response.content)
 
-print('Download Completed!!!')
+print('-- Download Completed ---')
+
+root = ET.fromstring(response.content)
+locale.setlocale(locale.LC_NUMERIC, "de_DE.UTF-8")
+
+for category in root.findall('kategorie'):
+    cat_name = category.find('kategorie_name').text
+    modules = category.find('bausteine')
+    for module in modules.findall('baustein'):
+        module_name = module.find('baustein_name').text
+        unit_name = module.find('einheit').text
+        values = module.find('werte')
+        sum_values = 0
+        for single_value in values.findall('wert_detail'):
+            myval = single_value.find('wert')
+            sum_values += locale.atof(myval.text)
+        print(cat_name + ' > ' + module_name + ': ' + str(sum_values) + ' ' + unit_name)
+
