@@ -7,9 +7,9 @@ import locale
 import datetime
 import xml.etree.ElementTree as ET
 import os.path
-import requests
-
-ENDPOINT_URL = 'https://www.smard.de/nip-download-manager/nip/download/market-data'
+import re
+import argparse
+import time
 CACHE_FILE = 'downloads/download.xml'
 
 import requests
