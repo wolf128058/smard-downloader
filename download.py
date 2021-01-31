@@ -153,13 +153,13 @@ else:
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
     TS_NOW = round(round_time(datetime.datetime.now(), 15*60).timestamp())
-    TS_NOW -= 120*60
+    TS_NOW -= 90*60
     # FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - 3600*24) * 1000
     FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW - 1) * 1000
     FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - (900)) * 1000
     # print(FORM_DATA)
 
-    if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 24 * 3600 or datetime.datetime.now().hour <= 1):
+    if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 900):
         filecontent = open(CACHE_FILE, 'r').read()
         root = ET.fromstring(filecontent)
     else:
@@ -222,8 +222,6 @@ if __name__ == '__main__':
     while True:
         time.sleep(60*15)
         TS_NOW = round(round_time(
-            datetime.datetime.now(), 24*60*60).timestamp())
-        if datetime.datetime.now().hour > 12:
-            TS_NOW -= 3600*24
-            main()
-            load()
+            datetime.datetime.now(), 15*60).timestamp())
+        main()
+        load()
