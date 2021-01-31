@@ -99,12 +99,13 @@ class CustomCollector:
         collectors only function called collect. and it collects data
         """
         global RESPONSE_DATA
-
+        utc_distance = round(datetime.datetime.now().timestamp() - datetime.datetime.utcnow().timestamp())
+        utc_from = FORM_DATA['request_form'][0]['timestamp_from'] + (utc_distance * 1000)
         energy_data = GaugeMetricFamily('smard_energydata', 'consumption or production in MWh', labels=[
             'id', 'region', 'cat_name', 'module_name', 'module_value'])
         for data in RESPONSE_DATA:
             energy_data.add_metric(
-                [str(data['id']), data['region'], data['category_name'], data['module_name']], data['value'], int(FORM_DATA['request_form'][0]['timestamp_from']))
+                [str(data['id']), data['region'], data['category_name'], data['module_name']], data['value'], utc_from)
         yield energy_data
 
 
