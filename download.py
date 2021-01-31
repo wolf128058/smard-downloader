@@ -101,10 +101,10 @@ class CustomCollector:
         global RESPONSE_DATA
 
         energy_data = GaugeMetricFamily('smard_energydata', 'consumption or production in MWh', labels=[
-            'id', 'cat_name', 'module_name', 'module_value'])
+            'id', 'region', 'cat_name', 'module_name', 'module_value'])
         for data in RESPONSE_DATA:
             energy_data.add_metric(
-                [str(data['id']), data['category_name'], data['module_name']], data['value'])
+                [str(data['id']), data['region'], data['category_name'], data['module_name']], data['value'], int(FORM_DATA['request_form'][0]['timestamp_from']))
         yield energy_data
 
 
@@ -152,11 +152,11 @@ else:
 
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
-    TS_NOW = round(round_time(datetime.datetime.now(), 24*60*60).timestamp())
-    if datetime.datetime.now().hour > 12:
-        TS_NOW -= 3600*24
-    FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - 3600*24) * 1000
+    TS_NOW = round(round_time(datetime.datetime.now(), 15*60).timestamp())
+    TS_NOW -= 120*60
+    # FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - 3600*24) * 1000
     FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW - 1) * 1000
+    FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - (900)) * 1000
     # print(FORM_DATA)
 
     if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 24 * 3600 or datetime.datetime.now().hour <= 1):
@@ -175,12 +175,13 @@ def load():
     mod_index = 0
     for category in root.findall('kategorie'):
         cat_name = category.find('kategorie_name').text
+        region_name = category.find('region').text
         modules = category.find('bausteine')
         for module in modules.findall('baustein'):
             mod_id = FORM_DATA['request_form'][0]['moduleIds'][mod_index]
             mod_index += 1
             module_dict = {'id': str(
-                mod_id), 'category_name': '', 'module_name': '', 'value': 0, 'unit': ''}
+                mod_id), 'region': region_name, 'category_name': '', 'module_name': '', 'value': 0, 'unit': ''}
             module_dict['category_name'] = cat_name
             module_name = module.find('baustein_name').text
             module_dict['module_name'] = module_name
