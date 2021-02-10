@@ -200,9 +200,14 @@ def load():
             module_dict['unit'] = unit_name
             values = module.find('werte')
             sum_values = 0
-            for single_value in values.findall('wert_detail'):
-                myval = single_value.find('wert')
-                sum_values += locale.atof(myval.text)
+
+            try: 
+                for single_value in values.findall('wert_detail'):
+                    myval = single_value.find('wert')
+                    sum_values += locale.atof(myval.text)
+            except:
+                continue
+                
             module_dict['value'] = sum_values
 
             RESPONSE_DATA.append(module_dict)
