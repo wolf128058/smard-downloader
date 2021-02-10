@@ -106,10 +106,17 @@ class CustomCollector:
         utc_from = utc_from * 1000
 
         energy_data = GaugeMetricFamily('smard_energydata', 'consumption or production in MWh', labels=[
-            'id', 'region', 'cat_name', 'module_name', 'module_value'])
+            'id', 'region', 'cat_name', 'module_name', 'energy_type'])
         for data in RESPONSE_DATA:
+            energy_type = "unknown"
+            if data['module_name'] == "Pumpspeicher":
+                energy_type = "neutral"
+            elif re.match("Wind Offshore|Wind Onshore|Wasserkraft|Sonstige Erneuerbare|Photovoltaik|Biomasse", data['module_name']) is not None:
+                energy_type = "renewable"
+            elif re.match("Kernenergie|Steinkohle|Braunkohle|Sonstige Konventionelle|Erdgas", data['module_name']) is not None:
+                energy_type = "conventional"
             energy_data.add_metric(
-                [str(data['id']), data['region'], data['category_name'], data['module_name']], data['value'], round(utc_from/1000))
+                [str(data['id']), data['region'], data['category_name'], data['module_name'], energy_type], data['value'], round(utc_from/1000))
         yield energy_data
 
 ENDPOINT_URL = ''
