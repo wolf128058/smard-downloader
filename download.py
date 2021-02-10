@@ -201,16 +201,19 @@ def load():
             values = module.find('werte')
             sum_values = 0
 
-            try: 
-                for single_value in values.findall('wert_detail'):
-                    myval = single_value.find('wert')
+            valid_sum = True
+            for single_value in values.findall('wert_detail'):
+                myval = single_value.find('wert')
+                if myval is None:
+                    myval = single_value.find('Value')
+                if myval is not None and myval != '-':
                     sum_values += locale.atof(myval.text)
-            except:
-                continue
+                else:
+                    valid_sum = False
                 
             module_dict['value'] = sum_values
-
-            RESPONSE_DATA.append(module_dict)
+            if valid_sum:
+                RESPONSE_DATA.append(module_dict)
 
     # print(json.dumps(RESPONSE_DATA, indent=4))
 
