@@ -206,7 +206,7 @@ def load():
                 myval = single_value.find('wert')
                 if myval is None:
                     myval = single_value.find('Value')
-                if myval is not None and myval != '-':
+                if myval is not None and myval.text != '-':
                     sum_values += locale.atof(myval.text)
                 else:
                     valid_sum = False
