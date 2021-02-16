@@ -100,9 +100,13 @@ class CustomCollector:
         """
         global RESPONSE_DATA
         utc_distance = round(datetime.datetime.now().timestamp() - datetime.datetime.utcnow().timestamp())
-        utc_from = FORM_DATA['request_form'][0]['timestamp_from'] - (utc_distance * 1000) + 5400000
+
+        # utc_from = FORM_DATA['request_form'][0]['timestamp_from'] - (utc_distance * 1000) + 5400000
+
+        # set timestamp artificially: 10minutes in the past
         utc_from = datetime.datetime.now().timestamp() - 10*60
 
+        # from seconds to milliseconds
         utc_from = utc_from * 1000
 
         energy_data = GaugeMetricFamily('smard_energydata', 'consumption or production in KWh', labels=[
@@ -164,11 +168,11 @@ else:
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
     TS_NOW = round(round_time(datetime.datetime.now(), 15*60).timestamp())
+
+    # subtract 90minutes (younger data is mostly not available)
     TS_NOW -= 90*60
-    # FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - 3600*24) * 1000
     FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW - 1) * 1000
     FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - (900)) * 1000
-    # print(FORM_DATA)
 
     if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 900):
         filecontent = open(CACHE_FILE, 'r').read()
