@@ -138,6 +138,8 @@ PARSER.add_argument('-p', '--port', default=8000,
                     help=r'the port this service should listen to')
 PARSER.add_argument('-m', '--modules', default='all',
                     help=r'ids of the modules to collect')
+PARSER.add_argument('-d', '--dryrun', default=False, action='store_true',
+                    help=r'dry run: just download, do not serve as server')
 ARGS = PARSER.parse_args()
 
 if ARGS.modules != 'all':
@@ -238,6 +240,8 @@ if __name__ == '__main__':
         exit('Error: ' + ARGS.port + ' is not a valid port-number')
     main()
     load()
+    if ARGS.dryrun:
+        exit()
     REGISTRY.register(CustomCollector())
     # Start up the server to expose the metrics.
     start_http_server(int(ARGS.port))
