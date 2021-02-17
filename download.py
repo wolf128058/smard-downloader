@@ -186,12 +186,23 @@ else:
 
 def load():
     global TS_NOW, FORM_DATA, CACHE_FILE, HEADERS, RESPONSE_DATA
-    TS_NOW = round(round_time(datetime.datetime.now(), 15*60).timestamp())
+    TS_NOW = round(round_time(datetime.datetime.now(), 60*60).timestamp())
 
     # subtract 90minutes (younger data is mostly not available)
     TS_NOW -= 90*60
-    FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW - 1) * 1000
+
     FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - (900)) * 1000
+    FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW) * 1000
+
+    # in case of the ex- and import-modulesids wee need a timeframe-size of one hour
+    if len(FORM_DATA['request_form'][0]['moduleIds']) == 1 and  FORM_DATA['request_form'][0]['moduleIds'][0] >= 31000000 and FORM_DATA['request_form'][0]['moduleIds'][0] <= 31000999:
+        TS_NOW = round(round_time(datetime.datetime.now(), 60*60).timestamp())
+        TS_NOW -= 120*60
+        FORM_DATA['request_form'][0]['timestamp_from'] = (TS_NOW - (60*60)) * 1000
+        FORM_DATA['request_form'][0]['timestamp_to'] = (TS_NOW) * 1000
+
+    print(FORM_DATA)
+
 
     if os.path.isfile(CACHE_FILE) and (datetime.datetime.now().timestamp() - os.path.getmtime(CACHE_FILE) < 900):
         filecontent = open(CACHE_FILE, 'r').read()
@@ -237,9 +248,6 @@ def load():
             module_dict['value'] = sum_values
             if valid_sum:
                 RESPONSE_DATA.append(module_dict)
-
-    # print(json.dumps(RESPONSE_DATA, indent=4))
-
 
 def main():
     """
