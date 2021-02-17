@@ -86,7 +86,26 @@ Module-Ids:
 5000410: Realisierter Stromverbrauch > Gesamt
 5004359: Realisierter Stromverbrauch > Residuallast
 
-
+31000714: Physikalischer Nettoexport (Grenzüberschreitend)
+31000140: Luxemburg (Export)
+31000569: Luxemburg (Import)
+31000145: Schweiz (Export) 
+31000574: Schweiz (Import)
+31000141: Niederlande (Export)
+31000570: Niederlande (Import)
+31000139: Frankreich (Export)
+31000568: Frankreich (Import)
+31000138: Dänemark (Export)
+31000567: Dänemark (Import)
+31000146: Tschechien (Export)
+31000575: Tschechien (Import)
+31000144: Schweden (Export) 
+31000573: Schweden (Import) 
+31000142: Österreich (Export)
+31000571: Österreich (Import)
+31000143: Polen (Export)
+31000572: Polen (Import)
+'''
 class CustomCollector:
     """
     Data Collector for serving them in prometheus client
