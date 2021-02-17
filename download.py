@@ -61,8 +61,8 @@ FORM_DATA = {
             5004359
         ],
         "region":"DE",
-        "timestamp_from": 1611010800000,
-        "timestamp_to": 1611961199999,
+        "timestamp_from": round(round_time(datetime.datetime.now(), 60*60).timestamp() - (15*60)) * 1000,
+        "timestamp_to": round(round_time(datetime.datetime.now(), 60*60).timestamp()) * 1000,
         "type":"discrete",
         "language":"de"
     }]
