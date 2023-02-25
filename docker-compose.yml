@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  smard-downloader:
+    build:
+      context: smard-downloader
+    container_name: monitoring-smard-downloader
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 100M
+    expose: 8000
+    restart: unless-stopped
+
