@@ -1,0 +1,526 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 20,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "description": "",
+      "fontSize": "80%",
+      "format": "kwatth",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "pluginVersion": "7.4.0",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"renewable\"})",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "renewable",
+          "refId": "A"
+        },
+        {
+          "expr": "smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"neutral\"}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "neutral",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"conventional\"})",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "conventional",
+          "refId": "D"
+        }
+      ],
+      "title": "Renewable vs Conventional (current)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "description": "",
+      "fontSize": "80%",
+      "format": "kwatth",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 7,
+      "interval": "1d",
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "pluginVersion": "7.4.0",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"renewable\"}[1d]))",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "renewable",
+          "refId": "A"
+        },
+        {
+          "expr": "avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"neutral\"}[1d])",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "neutral",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"conventional\"}[1d]))",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "conventional",
+          "refId": "D"
+        }
+      ],
+      "title": "Renewable vs Conventional (1d avg)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "description": "",
+      "fontSize": "80%",
+      "format": "kwatth",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 8,
+      "interval": "7d",
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "pluginVersion": "7.4.0",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"renewable\"}[7d]))",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "renewable",
+          "refId": "A"
+        },
+        {
+          "expr": "avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"neutral\"}[7d])",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "neutral",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(avg_over_time(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"conventional\"}[7d]))",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "conventional",
+          "refId": "D"
+        }
+      ],
+      "title": "Renewable vs Conventional (7d avg)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 5,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 370,
+        "total": true,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": true,
+      "pluginVersion": "8.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:192",
+          "alias": "neutral",
+          "color": "#B877D9"
+        },
+        {
+          "$$hashKey": "object:202",
+          "alias": "renewable",
+          "color": "#73BF69"
+        },
+        {
+          "$$hashKey": "object:210",
+          "alias": "conventional",
+          "color": "#F2495C"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"neutral\"}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "neutral",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"conventional\"})",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "conventional",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(smard_energydata{cat_name=\"Realisierte Erzeugung\",energy_type=\"renewable\"})",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "renewable",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Renewable vs Conventional",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:198",
+          "format": "kwatth",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:199",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 370,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "smard_energydata{cat_name=\"Realisierte Erzeugung\"}",
+          "interval": "",
+          "legendFormat": "{{module_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Generated (DE)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:105",
+          "format": "kwatth",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:106",
+          "format": "short",
+          "logBase": 1,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 370,
+        "total": true,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "smard_energydata{cat_name=\"Realisierter Stromverbrauch\"}",
+          "interval": "",
+          "legendFormat": "{{module_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Consumed (DE)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:105",
+          "format": "kwatth",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:106",
+          "format": "short",
+          "logBase": 1,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now-6m"
+  },
+  "timepicker": {
+    "nowDelay": "6m"
+  },
+  "timezone": "",
+  "title": "Smard-Energy-Data (renewable)",
+  "uid": "8JxREvPMk",
+  "version": 17,
+  "weekStart": ""
+}
